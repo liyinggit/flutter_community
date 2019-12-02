@@ -28,7 +28,7 @@ dependencies:
   provider: ^3.0.0+1
   #用于数据存储，实现数据持久化
   shared_preferences: "^0.4.2"
-  #缓存策略
+  #网络请求
   dio: ^3.0.5
   #图片缓存
   cached_network_image: ^1.1.3
@@ -45,6 +45,7 @@ dependencies:
   flutter_screenutil: ^0.4.2
   #第三方icon图标插件
   font_awesome_flutter: ^8.2.0
+
 
 dev_dependencies:
   flutter_test:
