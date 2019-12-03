@@ -3,8 +3,6 @@ import 'package:dio/dio.dart';
 class HttpUtils {
   static Dio dio;
 
-  static const String API_PREFIX = "";
-
   static const int CONNECT_TIMEOUT = 10000;
   static const int RECEIVE_TIMEOUT = 3000;
 
@@ -55,12 +53,10 @@ class HttpUtils {
   /// 创建 dio 实例对象
   static Dio createInstance(){
     if(dio == null){
-      /// 全局属性：请求前缀、连接超时时间、响应超时时间
-      Options options = new Options(
-        baseUrl: API_PREFIX,
-        connectTimeout: CONNECT_TIMEOUT,
-        receiveTimeout: RECEIVE_TIMEOUT,
-      );
+      /// 全局属性：连接超时时间、响应超时时间
+      BaseOptions options = new BaseOptions();
+      options.connectTimeout = CONNECT_TIMEOUT;
+      options.receiveTimeout = RECEIVE_TIMEOUT;
       dio = new Dio(options);
     }
   }
