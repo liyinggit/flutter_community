@@ -45,6 +45,11 @@ dependencies:
   flutter_screenutil: ^0.4.2
   #第三方icon图标插件
   font_awesome_flutter: ^8.2.0
+  #相机组件
+  image_picker: ^0.6.2+1
+
+   #据说能够使用aws
+  amazon_cognito_identity_dart: ^0.0.22
 
 
 dev_dependencies:
