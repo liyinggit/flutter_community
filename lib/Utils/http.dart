@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_community/models/auth.dart';
 
 class HttpRequest {
   final Dio dio = Dio();
 
   HttpRequest() {
     // api地址
-    dio.options.baseUrl = 'https://www.soscoon.com/';
+    dio.options.baseUrl = 'http://192.168.50.105:8181/';
     // 请求超时时间
     dio.options.receiveTimeout = 15000;
     //请求连接时间
@@ -13,6 +15,7 @@ class HttpRequest {
     // 增加拦截器(也可以使用自定义的拦截器)
     dio.interceptors
         .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
+      print('send request：path:${options.path}，baseURL:${options.baseUrl}');
       // 在请求被发送之前做一些事情
 
       return options; //continue
@@ -25,12 +28,21 @@ class HttpRequest {
       // 在返回响应数据之前做一些预处理
       print(response.data);
       print(response.statusCode);
-      if(response.statusCode == 200){
-        return response;
-      }
-      return response; // continue
+      return response;
     }, onError: (DioError e) async {
       // 当请求失败时做一些预处理
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        print(e.response.data);
+        print(e.response.headers);
+        print(e.response.request);
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print(e.request);
+        print(e.message);
+        print(e.type);
+      }
       return e; //continue
     }));
   }

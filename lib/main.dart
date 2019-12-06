@@ -5,7 +5,9 @@ import 'package:flutter_community/ui/house.dart';
 import 'package:flutter_community/ui/login.dart';
 import 'package:flutter_community/ui/open.dart';
 
-void main() => runApp(new MyApp());
+import 'common/Global.dart';
+
+void main() => Global.init().then((e) =>  runApp(new MyApp()));
 
 class MyApp extends StatelessWidget {
   @override

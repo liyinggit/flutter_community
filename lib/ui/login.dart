@@ -8,6 +8,7 @@ import 'package:flutter_community/Utils/http.dart';
 import 'package:flutter_community/models/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_community/common/Funs.dart' as Fun;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -93,27 +94,15 @@ class _LoginPageState extends State<LoginPage> {
     }
     return null;
   }
-
   ///登录
   _login() async {
-    const url = 'http://192.168.50.105:8181/authenticate';
-
-//    Response response = await HttpRequest().dio.post(
-//      url,
-//      data: {"username": _username, "password": _password},
-//    );
+    const path = '/authenticate';
 
     await HttpRequest().dio.post(
-      url,
+      path,
       data: {"username": _username, "password": _password},
     ).then((response) {
       print(response.data);
-      print("headers:");
-      print(response.headers);
-      print("request:");
-      print(response.request);
-      print("statusCode:");
-      print(response.statusCode);
       Auth auth = new Auth.fromJson(response.data);
       print("token：" + auth.token);
 
@@ -225,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           //设置按钮圆角
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           onPressed: () {
             //点击登录按钮，解除焦点，回收键盘
             _focusNodePassWord.unfocus();
@@ -314,7 +303,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           //设置按钮圆角
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           onPressed: () => Navigator.of(context).pushNamed("Register")),
     );
 
