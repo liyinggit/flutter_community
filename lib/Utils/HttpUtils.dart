@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+///暂时没有用啦
 class HttpUtils {
   static Dio dio;
 
