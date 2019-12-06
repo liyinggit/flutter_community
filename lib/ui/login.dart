@@ -49,7 +49,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     // 移除焦点监听
     _focusNodeUserName.removeListener(_focusNodeListener);
     _focusNodePassWord.removeListener(_focusNodeListener);
@@ -107,8 +106,8 @@ class _LoginPageState extends State<LoginPage> {
       print("token：" + auth.token);
 
       if(response.statusCode == 200){
-        //登录成功后跳转到绑定账号页面
-        Navigator.of(context).pushNamed("Register");
+        //登录成功后跳转到开门页面
+        Navigator.of(context).pushReplacementNamed("Open");
       }else{
         print("登录失败");
       }
