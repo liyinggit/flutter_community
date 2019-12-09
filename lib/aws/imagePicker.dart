@@ -20,6 +20,7 @@ class ImagePiker extends StatefulWidget {
 
 class _ImagePikerState extends State<ImagePiker> {
   File _image;
+  String url;
 
   Future getImage() async {
     var image = await ImagePicker.pickImage(
@@ -80,7 +81,12 @@ class _ImagePikerState extends State<ImagePiker> {
     try {
       final res = await req.send();
       print("结果");
-      print(res);
+      print(res.statusCode);
+
+        setState(() {
+          url = _s3Endpoint+"/"+name;
+        });
+
       await for (var value in res.stream.transform(utf8.decoder)) {
         print(value);
       }
@@ -139,48 +145,6 @@ class _ImagePikerState extends State<ImagePiker> {
       print(e);
       return;
     }
-  }
-
-  void postImage() async {
-    Dio dio = new Dio();
-    String path = _image.path;
-    final length = await _image.length();
-
-    var name = path.substring(path.lastIndexOf("/") + 1, path.length);
-    const _accessKeyId = 'AKIAIXC3CCBXJ7NYNV3Q';
-    const _secretKeyId = 'plIuwTxlr+N78zLUbDfZcwk6BROQWuDvnVYR03dA';
-    const _region = 'ap-northeast-1';
-    const _s3Endpoint = 'https://community2.s3-ap-northeast-1.amazonaws.com';
-    const _bucket = 'community2';
-
-    final policy = Policy.fromS3PresignedPost(
-        name, _bucket, _accessKeyId, 15, length,
-        region: _region);
-    final key =
-        SigV4.calculateSigningKey(_secretKeyId, policy.datetime, _region, 's3');
-    final signature = SigV4.calculateSignature(key, policy.encode());
-    print("policy:" + policy.toString());
-    print("key:" + key.toString());
-    print("签名：" + signature);
-
-    dio.options.headers['X-Amz-Signature'] = signature;
-    dio.options.headers['X-Amz-Credential'] = policy.credential;
-    dio.options.headers['X-Amz-Algorithm'] = 'AWS4-HMAC-SHA256';
-    dio.options.headers['X-Amz-Date'] = policy.datetime;
-
-    FormData formData = new FormData.fromMap({
-      "key": name,
-      "Content-Type": "image/jpeg",
-      'acl': 'public-read',
-      'AWSAccessKeyId': _accessKeyId,
-      'policy': policy.encode(),
-      "file": _image,
-    });
-
-    await dio.post(_s3Endpoint, data: formData).then((response) {
-      print("返回：");
-      print(response);
-    });
   }
 
   @override
