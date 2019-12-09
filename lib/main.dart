@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       ///主题颜色
       theme: new ThemeData(primaryColor: Colors.white),
-      home: Open(), //当前页面
+      home: ImagePiker(), //当前页面
       routes: <String, WidgetBuilder>{
         ///添加路由
         "Open": (BuildContext context) => Open(),

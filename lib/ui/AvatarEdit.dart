@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -21,12 +20,13 @@ class _AvatarEditState extends State<AvatarEdit> {
   final String avatarUrl;
   File imageFile;
   String _activeKey;
+
   _AvatarEditState(this.avatarUrl);
+
   final List<Map<String, dynamic>> _actionListData = [
     {'title': '拍照', 'value': 'takePhoto'},
     {'title': '相册', 'value': 'ablum'},
   ];
-
 
   // 选择图片
   Future<Null> _pickImage() async {
@@ -43,14 +43,14 @@ class _AvatarEditState extends State<AvatarEdit> {
   //图片裁剪
   Future<Null> _cropImage() async {
     File croppedFile = await ImageCropper.cropImage(
-      sourcePath: imageFile.path,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
-      ],
+        sourcePath: imageFile.path,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
+        ],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Cropper',
             toolbarColor: Colors.deepOrange,
@@ -59,10 +59,11 @@ class _AvatarEditState extends State<AvatarEdit> {
             lockAspectRatio: false),
         iosUiSettings: IOSUiSettings(
           minimumAspectRatio: 1.0,
-        )
-    );
+        ));
     if (croppedFile != null) {
       imageFile = croppedFile;
+      print("图片");
+      print(croppedFile);
     }
   }
 
@@ -95,23 +96,25 @@ class _AvatarEditState extends State<AvatarEdit> {
         actions: <Widget>[
           IconButton(
             alignment: Alignment.centerLeft,
-            onPressed: (){
+            onPressed: () {
               showModalBottomSheet(
                   context: context,
                   backgroundColor: Colors.transparent,
-                  builder: (BuildContext context){
+                  builder: (BuildContext context) {
                     return ClipRect(
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
                         ),
                         child: StatefulBuilder(
-                          builder: (BuildContext context,StateSetter setState)=>
-                              Column(
-                                mainAxisSize: MainAxisSize.min, // 设置最小的弹出
-                                children: <Widget>[
+                          builder:
+                              (BuildContext context, StateSetter setState) =>
                                   Column(
-                                    children: _actionListData.map((Map<String,dynamic> data) =>
+                            mainAxisSize: MainAxisSize.min, // 设置最小的弹出
+                            children: <Widget>[
+                              Column(
+                                children: _actionListData
+                                    .map((Map<String, dynamic> data) =>
                                         GestureDetector(
                                           onTapUp: (TapUpDetails details) {
                                             setState(() {
@@ -136,41 +139,38 @@ class _AvatarEditState extends State<AvatarEdit> {
                                                 data['title'],
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
-                                                    fontSize:16,
+                                                  fontSize: 16,
                                                 ),
                                               ),
-                                              color:
-                                              _activeKey == data['value']
+                                              color: _activeKey == data['value']
                                                   ? Color(0xfffafafa)
                                                   : Colors.white),
-                                        )
-                                    ).toList(),
-                                  ),
-                                  ListTile(
-                                    title: Text(
-                                      '取消',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  SizedBox(
-                                    height: 20.0,
-                                  ),
-                                ],
-                              )
-                          ,
+                                        ))
+                                    .toList(),
+                              ),
+                              ListTile(
+                                title: Text(
+                                  '取消',
+                                  textAlign: TextAlign.center,
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              SizedBox(
+                                height: 20.0,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
-                  }
-              );
+                  });
             },
             icon: SvgPicture.asset(
               'images/icon_setting.svg',
               width: 20,
-              height:20,
+              height: 20,
             ),
           )
         ],
@@ -183,17 +183,16 @@ class _AvatarEditState extends State<AvatarEdit> {
   }
 }
 
-
 ///图片的显示
 class FullScreenWrapper extends StatelessWidget {
   const FullScreenWrapper(
       {this.imageProvider,
-        this.loadingChild,
-        this.backgroundDecoration,
-        this.minScale,
-        this.maxScale,
-        this.initialScale,
-        this.basePosition = Alignment.center});
+      this.loadingChild,
+      this.backgroundDecoration,
+      this.minScale,
+      this.maxScale,
+      this.initialScale,
+      this.basePosition = Alignment.center});
 
   final ImageProvider imageProvider;
   final Widget loadingChild;

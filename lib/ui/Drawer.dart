@@ -1,7 +1,6 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_community/Utils/http.dart';
 
 import 'AvatarEdit.dart';
 
@@ -13,32 +12,32 @@ class showDrawer extends StatefulWidget {
 class _DrawerState extends State<showDrawer> {
   @override
   Widget build(BuildContext context) {
-
-    final String avatarUrl = 'http://admin.soscoon.com/uploadImages/2bdcbd37d2fae6874cce4bba45d14573630925b1.jpeg';
+    final String avatarUrl =
+        'https://community2.s3-ap-northeast-1.amazonaws.com/2.jpg';
     return Drawer(
       child: Column(
         children: <Widget>[
           GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AvatarEdit(
-                      avatarUrl: avatarUrl,
-                    ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AvatarEdit(
+                    avatarUrl: avatarUrl,
                   ),
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.only(top: 30.0),
-                width: 100.0,
-                height: 100.0,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    color: Color(0xff2A2C33),
-                    image: DecorationImage(image: NetworkImage(avatarUrl)),
                 ),
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 30.0),
+              width: 100.0,
+              height: 100.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                color: Color(0xff2A2C33),
+                image: DecorationImage(image: NetworkImage(avatarUrl)),
               ),
+            ),
           ),
           MediaQuery.removePadding(
             context: context,
@@ -77,5 +76,4 @@ class _DrawerState extends State<showDrawer> {
       ],
     );
   }
-
 }
