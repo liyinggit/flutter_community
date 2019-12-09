@@ -17,3 +17,11 @@ samples, guidance on mobile development, and a full API reference.
 
 生成DartModel
 flutter packages pub run json_model
+
+
+先后执行
+flutter packages pub run build_runner clean 和
+ flutter packages pub run build_runner build --delete-conflicting-outputs
+
+当文件中添加了内容，会自动添加到
+flutter packages pub run build_runner watch

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_community/ui/Drawer.dart';
 
 class Open extends StatefulWidget {
   @override
@@ -32,6 +33,7 @@ class _OpenState extends State<Open> {
             ),
           ),
         )),
+        drawer: showDrawer(),
         body: new Column(
           children: <Widget>[
             new Center(
@@ -139,6 +141,7 @@ class _OpenState extends State<Open> {
                   ),
                 ))
           ],
-        ));
+        ),
+    );
   }
 }
