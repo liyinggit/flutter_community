@@ -1,16 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:amazon_cognito_identity_dart/sig_v4.dart';
+import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:amazon_cognito_identity_dart/cognito.dart';
-import 'dart:convert';
-import 'dart:io';
-import 'package:path/path.dart' as path;
-import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
-import 'package:amazon_cognito_identity_dart/sig_v4.dart';
+import 'package:image_picker/image_picker.dart';
+
 import './policy.dart';
 
 class ImagePiker extends StatefulWidget {
@@ -38,6 +36,67 @@ class _ImagePikerState extends State<ImagePiker> {
       _image = null;
       print("图片：");
       print(_image);
+    });
+  }
+
+  ///上传图片到公共的桶
+  uploadPublicImage() async {
+    String path = _image.path;
+    var name = path.substring(path.lastIndexOf("/") + 1, path.length);
+    const _s3Endpoint = 'https://community2.s3-ap-northeast-1.amazonaws.com';
+
+    Dio dio = Dio();
+
+    FormData formData = FormData.fromMap({
+      "acl": 'public-read', //表示图片公开
+      'key': name,
+      "file": await MultipartFile.fromFile(path, filename: name), //上传的文件
+    });
+
+    await dio.post(_s3Endpoint, data: formData).then((response) {
+      print("结果");
+      print(response.statusCode);
+    });
+  }
+
+  ///上传图片到非公开的桶
+  uploadPrivateImage() async {
+    String path = _image.path;
+    var name = path.substring(path.lastIndexOf("/") + 1, path.length);
+    final length = await _image.length();
+
+    const _accessKeyId = 'AKIAIXC3CCBXJ7NYNV3Q';
+    const _secretKeyId = 'plIuwTxlr+N78zLUbDfZcwk6BROQWuDvnVYR03dA';
+    const _region = 'ap-northeast-1';
+    const _s3Endpoint = 'https://community1.s3-ap-northeast-1.amazonaws.com';
+    const _bucket = "community1";
+
+    final policy = Policy.fromS3PresignedPost(
+        name, _bucket, _accessKeyId, 15, length,
+        region: _region);
+    final key =
+        SigV4.calculateSigningKey(_secretKeyId, policy.datetime, _region, 's3');
+    final signature = SigV4.calculateSignature(key, policy.encode());
+    print("签名：" + signature);
+    print("policy:" + policy.toString());
+    print("key:" + key.toString());
+
+    Dio dio = Dio();
+    FormData formData = FormData.fromMap({
+      "acl": 'private',
+      'bucket': _bucket,
+      'key': name,
+      'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+      'x-amz-credential': policy.credential,
+      'x-amz-date': policy.datetime,
+      'policy': policy.encode(),
+      'X-amz-Signature': signature,
+      "file": await MultipartFile.fromFile(path, filename: name),
+    });
+
+    await dio.post(_s3Endpoint, data: formData).then((response) {
+      print("结果");
+      print(response.statusCode);
     });
   }
 
@@ -81,12 +140,27 @@ class _ImagePikerState extends State<ImagePiker> {
       print("结果");
       print(res.statusCode);
 
-      String url = _s3Endpoint+"/"+name+"?"+"X-Amz-Algorithm="+'AWS4-HMAC-SHA256'+"&X-Amz-Date="+policy.datetime+"&X-Amz-SignedHeaders="+'host'+"&X-Amz-Expires="+'600'+"&X-Amz-Credential="+policy.credential+"&X-Amz-Signature="+signature;
+      String url = _s3Endpoint +
+          "/" +
+          name +
+          "?" +
+          "X-Amz-Algorithm=" +
+          'AWS4-HMAC-SHA256' +
+          "&X-Amz-Date=" +
+          policy.datetime +
+          "&X-Amz-SignedHeaders=" +
+          'host' +
+          "&X-Amz-Expires=" +
+          '600' +
+          "&X-Amz-Credential=" +
+          policy.credential +
+          "&X-Amz-Signature=" +
+          signature;
 
       print(url);
-        setState(() {
-          url = _s3Endpoint+"/"+name;
-        });
+      setState(() {
+        url = _s3Endpoint + "/" + name;
+      });
 
       await for (var value in res.stream.transform(utf8.decoder)) {
         print(value);
@@ -96,10 +170,11 @@ class _ImagePikerState extends State<ImagePiker> {
     }
   }
 
-  getUrl() async{
+  getUrl() async {
     const _accessKeyId = 'AKIAIXC3CCBXJ7NYNV3Q';
     const _secretKeyId = 'plIuwTxlr+N78zLUbDfZcwk6BROQWuDvnVYR03dA';
-    const _sessionToken = 'FwoGZXIvYXdzEJT//////////wEaDMBTBJro+no2x6Du0SJqlD/Aj+q/nmVfkUONjtiuAdvFaSuXGo6HUSJvf/OTLJykQiCLklIYQDIOwv+YXWT0aMH2pBayRp5juxYrwFL7J9VuRaSDfZNm49uqASQjts/sSF65Zwjm+iTxkW6nvK0/iQKbK1oTL0zVXCjXk7zvBTIoCTOgyWOLXyYoXxk3aK+BFcy+xImcv59jrgfeq01iYURGiPOgJYNKpg==';
+    const _sessionToken =
+        'FwoGZXIvYXdzEJT//////////wEaDMBTBJro+no2x6Du0SJqlD/Aj+q/nmVfkUONjtiuAdvFaSuXGo6HUSJvf/OTLJykQiCLklIYQDIOwv+YXWT0aMH2pBayRp5juxYrwFL7J9VuRaSDfZNm49uqASQjts/sSF65Zwjm+iTxkW6nvK0/iQKbK1oTL0zVXCjXk7zvBTIoCTOgyWOLXyYoXxk3aK+BFcy+xImcv59jrgfeq01iYURGiPOgJYNKpg==';
 
     const region = 'ap-northeast-1';
     var host = 's3.ap-northeast-1.amazonaws.com';
@@ -133,17 +208,29 @@ class _ImagePikerState extends State<ImagePiker> {
     print(datetime);
     print(Credential.replaceAll("/", "%2F"));
 
-
-    String url = key+"?"+"X-Amz-Algorithm="+Algorithm+"&X-Amz-Date="+datetime+"&X-Amz-SignedHeaders="+SignedHeaders+"&X-Amz-Expires="+Expires+"&X-Amz-Credential="+cre+"&X-Amz-Signature="+signature;
+    String url = key +
+        "?" +
+        "X-Amz-Algorithm=" +
+        Algorithm +
+        "&X-Amz-Date=" +
+        datetime +
+        "&X-Amz-SignedHeaders=" +
+        SignedHeaders +
+        "&X-Amz-Expires=" +
+        Expires +
+        "&X-Amz-Credential=" +
+        cre +
+        "&X-Amz-Signature=" +
+        signature;
 
     print(url);
-
   }
 
   void downImage() async {
     const _accessKeyId = 'AKIAIXC3CCBXJ7NYNV3Q';
     const _secretKeyId = 'plIuwTxlr+N78zLUbDfZcwk6BROQWuDvnVYR03dA';
-    const _sessionToken = 'FwoGZXIvYXdzEIH//////////wEaDLPOyQV4tSp86a68cyJq279cz48TvcA8pA9oiYZWjz3vHcxqNW77I5GmAlSw2RCiH60eA9NxJ6b7/2q74Cq5gceMqQ1HEJoIK6HuB3EqYPMTxWwV7ifvAqARgerKIVyw24/vUl3VQlCxcV9cyealK4uKDnS6Se4UDyjn6rfvBTIot2AGIpj3hM3PlgBD5ROq/GX6oFY5hZIyJkJHEmDsTAA/JZ1gQsp82A==';
+    const _sessionToken =
+        'FwoGZXIvYXdzEIH//////////wEaDLPOyQV4tSp86a68cyJq279cz48TvcA8pA9oiYZWjz3vHcxqNW77I5GmAlSw2RCiH60eA9NxJ6b7/2q74Cq5gceMqQ1HEJoIK6HuB3EqYPMTxWwV7ifvAqARgerKIVyw24/vUl3VQlCxcV9cyealK4uKDnS6Se4UDyjn6rfvBTIot2AGIpj3hM3PlgBD5ROq/GX6oFY5hZIyJkJHEmDsTAA/JZ1gQsp82A==';
 
     const region = 'ap-northeast-1';
     final host = 's3.ap-northeast-1.amazonaws.com';
