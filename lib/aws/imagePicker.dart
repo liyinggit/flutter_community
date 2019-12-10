@@ -81,6 +81,9 @@ class _ImagePikerState extends State<ImagePiker> {
       print("结果");
       print(res.statusCode);
 
+      String url = _s3Endpoint+"/"+name+"?"+"X-Amz-Algorithm="+'AWS4-HMAC-SHA256'+"&X-Amz-Date="+policy.datetime+"&X-Amz-SignedHeaders="+'host'+"&X-Amz-Expires="+'600'+"&X-Amz-Credential="+policy.credential+"&X-Amz-Signature="+signature;
+
+      print(url);
         setState(() {
           url = _s3Endpoint+"/"+name;
         });
@@ -192,7 +195,6 @@ class _ImagePikerState extends State<ImagePiker> {
   @override
   Widget build(BuildContext context) {
     getUrl();
-    downImage();
     return Scaffold(
       appBar: AppBar(
         title: Text('Image Picker Example'),
