@@ -26,6 +26,7 @@ class _AvatarEditState extends State<AvatarEdit> {
   final List<Map<String, dynamic>> _actionListData = [
     {'title': '拍照', 'value': 'takePhoto'},
     {'title': '相册', 'value': 'ablum'},
+    {'title': '视频', 'value': 'vidio'},
   ];
 
   // 选择图片
@@ -39,6 +40,12 @@ class _AvatarEditState extends State<AvatarEdit> {
     imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
     if (imageFile != null) {}
   }
+
+  Future<Null> _takeVideo() async {
+    await ImagePicker.pickVideo(source: ImageSource.camera);
+
+  }
+
 
   //图片裁剪
   Future<Null> _cropImage() async {
@@ -79,6 +86,11 @@ class _AvatarEditState extends State<AvatarEdit> {
       case 'ablum':
         _pickImage().then((_) {
           _cropImage();
+        });
+        break;
+      case 'vidio':
+        _takeVideo().then((_) {
+
         });
         break;
       default:

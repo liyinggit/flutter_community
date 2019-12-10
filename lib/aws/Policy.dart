@@ -41,6 +41,7 @@ class Policy {
     return base64.encode(bytes);
   }
 
+  //acl，上传到非公开的就要用private或者不填，公开的用public-read
   @override
   String toString() {
     return '''
@@ -48,7 +49,7 @@ class Policy {
   "conditions": [
     {"bucket": "${this.bucket}"},
     ["starts-with", "\$key", "${this.key}"],
-    {"acl": "public-read"},
+    {"acl": "private"},
     ["content-length-range", 1, ${this.maxFileSize}],
     {"x-amz-credential": "${this.credential}"},
     {"x-amz-algorithm": "AWS4-HMAC-SHA256"},

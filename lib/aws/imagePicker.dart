@@ -41,7 +41,8 @@ class _ImagePikerState extends State<ImagePiker> {
     });
   }
 
-  ///目前能上传上去
+  ///目前能上传上去(公开和非公开都可以）
+  ///acl，上传到非公开的就要用private或者不填，公开的用public-read
   void uploadImage() async {
     String path = _image.path;
     var name = path.substring(path.lastIndexOf("/") + 1, path.length);
@@ -49,21 +50,18 @@ class _ImagePikerState extends State<ImagePiker> {
     const _accessKeyId = 'AKIAIXC3CCBXJ7NYNV3Q';
     const _secretKeyId = 'plIuwTxlr+N78zLUbDfZcwk6BROQWuDvnVYR03dA';
     const _region = 'ap-northeast-1';
-    const _s3Endpoint = 'https://community2.s3-ap-northeast-1.amazonaws.com';
+    const _s3Endpoint = 'https://community1.s3-ap-northeast-1.amazonaws.com';
+    const _bucket = "community1";
 
     final stream = http.ByteStream(DelegatingStream.typed(_image.openRead()));
     final length = await _image.length();
 
     final uri = Uri.parse(_s3Endpoint);
     final req = http.MultipartRequest("POST", uri);
-    final multipartFile =
-        http.MultipartFile('file', stream, length, filename: name);
+    final multipartFile = http.MultipartFile('file', stream, length, filename: name);
 
-    final policy = Policy.fromS3PresignedPost(
-        name, 'community2', _accessKeyId, 15, length,
-        region: _region);
-    final key =
-        SigV4.calculateSigningKey(_secretKeyId, policy.datetime, _region, 's3');
+    final policy = Policy.fromS3PresignedPost(name, _bucket, _accessKeyId, 15, length, region: _region);
+    final key = SigV4.calculateSigningKey(_secretKeyId, policy.datetime, _region, 's3');
     final signature = SigV4.calculateSignature(key, policy.encode());
     print("签名：" + signature);
     print("policy:" + policy.toString());
@@ -71,7 +69,7 @@ class _ImagePikerState extends State<ImagePiker> {
 
     req.files.add(multipartFile);
     req.fields['key'] = policy.key;
-    req.fields['acl'] = 'public-read';
+    req.fields['acl'] = 'private'; //
     req.fields['X-Amz-Credential'] = policy.credential;
     req.fields['X-Amz-Algorithm'] = 'AWS4-HMAC-SHA256';
     req.fields['X-Amz-Date'] = policy.datetime;
@@ -95,9 +93,53 @@ class _ImagePikerState extends State<ImagePiker> {
     }
   }
 
+  getUrl() async{
+    const _accessKeyId = 'AKIAIXC3CCBXJ7NYNV3Q';
+    const _secretKeyId = 'plIuwTxlr+N78zLUbDfZcwk6BROQWuDvnVYR03dA';
+    const _sessionToken = 'FwoGZXIvYXdzEJT//////////wEaDMBTBJro+no2x6Du0SJqlD/Aj+q/nmVfkUONjtiuAdvFaSuXGo6HUSJvf/OTLJykQiCLklIYQDIOwv+YXWT0aMH2pBayRp5juxYrwFL7J9VuRaSDfZNm49uqASQjts/sSF65Zwjm+iTxkW6nvK0/iQKbK1oTL0zVXCjXk7zvBTIoCTOgyWOLXyYoXxk3aK+BFcy+xImcv59jrgfeq01iYURGiPOgJYNKpg==';
+
+    const region = 'ap-northeast-1';
+    var host = 's3.ap-northeast-1.amazonaws.com';
+    final key = 'https://community1.s3-ap-northeast-1.amazonaws.com/2.jpg';
+    final service = 's3';
+    final payload = SigV4.hashCanonicalRequest('');
+    final datetime = SigV4.generateDatetime();
+    final canonicalRequest = '''GET
+          ${'/$key'.split('/').map((s) => Uri.encodeComponent(s)).join('/')}
+          
+          host:$host
+          x-amz-content-sha256:$payload
+          x-amz-date:$datetime
+          host;x-amz-content-sha256;x-amz-date
+          $payload''';
+    final credentialScope = SigV4.buildCredentialScope(datetime, region, service);
+    final stringToSign = SigV4.buildStringToSign(datetime, credentialScope, SigV4.hashCanonicalRequest(canonicalRequest));
+    final signingKey = SigV4.calculateSigningKey(_secretKeyId, datetime, region, service);
+    final signature = SigV4.calculateSignature(signingKey, stringToSign);
+   const Algorithm = 'AWS4-HMAC-SHA256';
+    const SignedHeaders = 'host';
+    const Expires = "600";
+
+    var Credential = '$_accessKeyId'+"/"+'$credentialScope';
+    var cre = Credential.replaceAll("/", "%2F");
+
+    print(Algorithm);
+    print(SignedHeaders);
+    print(Expires);
+    print(signature);
+    print(datetime);
+    print(Credential.replaceAll("/", "%2F"));
+
+
+    String url = key+"?"+"X-Amz-Algorithm="+Algorithm+"&X-Amz-Date="+datetime+"&X-Amz-SignedHeaders="+SignedHeaders+"&X-Amz-Expires="+Expires+"&X-Amz-Credential="+cre+"&X-Amz-Signature="+signature;
+
+    print(url);
+
+  }
+
   void downImage() async {
-    const _accessKeyId = 'ASIAZT6NFEICHC7IUSRV';
-    const _secretKeyId = 'ZQuyS4mhDicGo4iIwEosFximHaOZishopeywct4o';
+    const _accessKeyId = 'AKIAIXC3CCBXJ7NYNV3Q';
+    const _secretKeyId = 'plIuwTxlr+N78zLUbDfZcwk6BROQWuDvnVYR03dA';
     const _sessionToken = 'FwoGZXIvYXdzEIH//////////wEaDLPOyQV4tSp86a68cyJq279cz48TvcA8pA9oiYZWjz3vHcxqNW77I5GmAlSw2RCiH60eA9NxJ6b7/2q74Cq5gceMqQ1HEJoIK6HuB3EqYPMTxWwV7ifvAqARgerKIVyw24/vUl3VQlCxcV9cyealK4uKDnS6Se4UDyjn6rfvBTIot2AGIpj3hM3PlgBD5ROq/GX6oFY5hZIyJkJHEmDsTAA/JZ1gQsp82A==';
 
     const region = 'ap-northeast-1';
@@ -149,6 +191,8 @@ class _ImagePikerState extends State<ImagePiker> {
 
   @override
   Widget build(BuildContext context) {
+    getUrl();
+    downImage();
     return Scaffold(
       appBar: AppBar(
         title: Text('Image Picker Example'),
