@@ -9,7 +9,10 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="flutter_community"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:replace="label"
+    >
 
         <meta-data android:name="com.alibaba.app.appkey" android:value="28192048"/> <!-- 请填写你自己的- appKey -->
         <meta-data android:name="com.alibaba.app.appsecret" android:value="674930f328d35aee1be67698acffada7"/> <!-- 请填写你自己的appSecret -->
