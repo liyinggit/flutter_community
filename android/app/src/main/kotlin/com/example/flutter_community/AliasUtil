@@ -1,0 +1,73 @@
+package com.example.flutter_community
+
+import android.app.Activity
+import android.util.Log
+import com.alibaba.sdk.android.push.CommonCallback
+import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.PluginRegistry
+import io.flutter.plugin.common.PluginRegistry.Registrar
+
+
+class AliUtil :MethodChannel.MethodCallHandler{
+
+    /** Channel名称  **/
+    private val ChannelName = "com.example.flutter_community/AliUtil"
+
+    companion object {
+        private const val TAG = "Alias"
+    }
+
+    /**
+     * 添加别名
+     */
+    private fun addAlias(userId: String) {
+
+        PushServiceFactory.getCloudPushService().addAlias(userId, object : CommonCallback {
+            override fun onSuccess(s: String) {
+                Log.i(TAG, userId + " 订阅成功")
+            }
+
+            override fun onFailed(s: String, s1: String) {
+                Log.i(TAG, userId + " 订阅失敗")
+            }
+        })
+    }
+
+    /**
+     * 移除别名
+     */
+    private fun removeAlias(userId: String) {
+        PushServiceFactory.getCloudPushService().removeAlias(userId, object : CommonCallback {
+            override fun onSuccess(s: String) {
+                Log.i(TAG, userId + " 解绑成功")
+            }
+
+            override fun onFailed(s: String, s1: String) {
+                Log.i(TAG, userId + " 解绑失敗")
+            }
+        })
+
+    }
+
+    override fun onMethodCall(p0: MethodCall, p1: MethodChannel.Result) {
+       if(p0.method.equals("addAlias")){
+           val text = p0.argument<String>("text")
+           if (text != null) {
+               addAlias(text)
+           }
+       }else if(p0.method.equals("removeAlias")){
+           val text = p0.argument<String>("text")
+           if (text != null) {
+               removeAlias(text)
+           }
+       }else{
+           p1.notImplemented()
+       }
+    }
+
+
+}
+
+

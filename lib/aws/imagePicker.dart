@@ -6,6 +6,7 @@ import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
@@ -19,6 +20,31 @@ class ImagePiker extends StatefulWidget {
 class _ImagePikerState extends State<ImagePiker> {
   File _image;
   String url;
+
+  static const alias = const MethodChannel('flutter_community/alias');
+
+  ///添加别名
+  Future<void> _addAlias() async {
+    try {
+      await alias.invokeMethod('addAlias',"1234567");
+
+    } catch (e) {
+      print(e.toString());
+    }
+
+  }
+
+  ///移除别名
+  Future<void> _removeAlias() async {
+    try {
+      await alias.invokeMethod('removeAlias',"1234567");
+
+    } catch (e) {
+      print(e.toString());
+    }
+
+  }
+
 
   Future getImage() async {
     var image = await ImagePicker.pickImage(
@@ -298,7 +324,7 @@ class _ImagePikerState extends State<ImagePiker> {
               ),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30)), ////圆角按钮
-              onPressed: () => uploadImage(),
+              onPressed: () => _addAlias(),
               color: Colors.amber,
             ),
             RaisedButton(
