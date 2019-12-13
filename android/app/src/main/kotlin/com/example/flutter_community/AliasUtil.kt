@@ -1,19 +1,13 @@
 package com.example.flutter_community
 
-import android.app.Activity
 import android.util.Log
 import com.alibaba.sdk.android.push.CommonCallback
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.PluginRegistry
-import io.flutter.plugin.common.PluginRegistry.Registrar
 
 
-class AliUtil :MethodChannel.MethodCallHandler{
-
-    /** Channel名称  **/
-    private val ChannelName = "com.example.flutter_community/AliUtil"
+class AliasUtil : MethodChannel.MethodCallHandler {
 
     companion object {
         private const val TAG = "Alias"
@@ -22,7 +16,7 @@ class AliUtil :MethodChannel.MethodCallHandler{
     /**
      * 添加别名
      */
-    private fun addAlias(userId: String) {
+    fun addAlias(userId: String) {
 
         PushServiceFactory.getCloudPushService().addAlias(userId, object : CommonCallback {
             override fun onSuccess(s: String) {
@@ -38,7 +32,7 @@ class AliUtil :MethodChannel.MethodCallHandler{
     /**
      * 移除别名
      */
-    private fun removeAlias(userId: String) {
+    fun removeAlias(userId: String) {
         PushServiceFactory.getCloudPushService().removeAlias(userId, object : CommonCallback {
             override fun onSuccess(s: String) {
                 Log.i(TAG, userId + " 解绑成功")
@@ -51,23 +45,30 @@ class AliUtil :MethodChannel.MethodCallHandler{
 
     }
 
-    override fun onMethodCall(p0: MethodCall, p1: MethodChannel.Result) {
-       if(p0.method.equals("addAlias")){
-           val text = p0.argument<String>("text")
-           if (text != null) {
-               addAlias(text)
-           }
-       }else if(p0.method.equals("removeAlias")){
-           val text = p0.argument<String>("text")
-           if (text != null) {
-               removeAlias(text)
-           }
-       }else{
-           p1.notImplemented()
-       }
+    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        if (call.method.equals("addAlias")) {
+            val text = call.argument<String>("text")
+            if (text != null) {
+                //调用AliasUtil中的方法
+                result.success(addAlias(text))
+            } else {
+                result.error("UNAVAILABLE", "别名不能为空.", null)
+            }
+        } else if (call.method.equals("removeAlias")) {
+            val text = call.argument<String>("text")
+            if (text != null) {
+                result.success(removeAlias(text))
+            } else {
+                result.error("UNAVAILABLE", "别名不能为空.", null)
+            }
+        } else {
+            result.notImplemented()
+        }
     }
 
 
 }
+
+
 
 

@@ -7,15 +7,13 @@ import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
+import com.example.flutter_community.AliasUtil as AliasUtil
 
 
 class MainActivity : FlutterActivity() {
-    companion object {
-        private const val TAG = "Alias"
-    }
 
+    private var aliasUtil:AliasUtil = AliasUtil()
     private val CHANNEL = "flutter_community/alias"
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,14 +25,15 @@ class MainActivity : FlutterActivity() {
                 //这是传来的参数
                 val text = call.argument<String>("text")
                 if (text != null) {
-                    result.success(addAlias(text))
+                    //调用AliasUtil中的方法
+                    result.success(aliasUtil.addAlias(text))
                 } else {
                     result.error("UNAVAILABLE", "别名不能为空.", null)
                 }
             } else if (call.method == "removeAlias") {
                 val text = call.argument<String>("text")
                 if (text != null) {
-                    result.success(addAlias(text))
+                    result.success(aliasUtil.removeAlias(text))
                 } else {
                     result.error("UNAVAILABLE", "别名不能为空.", null)
                 }
@@ -43,39 +42,6 @@ class MainActivity : FlutterActivity() {
             }
 
         }
-    }
-
-
-    /**
-     * 添加别名
-     */
-    fun addAlias(userId: String) {
-
-        PushServiceFactory.getCloudPushService().addAlias(userId, object : CommonCallback {
-            override fun onSuccess(s: String) {
-                Log.i(TAG, userId + " 订阅成功")
-            }
-
-            override fun onFailed(s: String, s1: String) {
-                Log.i(TAG, userId + " 订阅失敗")
-            }
-        })
-    }
-
-    /**
-     * 移除别名
-     */
-    fun removeAlias(userId: String) {
-        PushServiceFactory.getCloudPushService().removeAlias(userId, object : CommonCallback {
-            override fun onSuccess(s: String) {
-                Log.i(TAG, userId + " 解绑成功")
-            }
-
-            override fun onFailed(s: String, s1: String) {
-                Log.i(TAG, userId + " 解绑失敗")
-            }
-        })
-
     }
 
 }
