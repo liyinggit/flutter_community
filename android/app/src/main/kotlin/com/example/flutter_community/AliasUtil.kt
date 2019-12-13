@@ -61,14 +61,14 @@ class AliasUtil : MethodChannel.MethodCallHandler {
             val text = call.argument<String>("text")
             if (text != null) {
                 //调用AliasUtil中的方法
-                result.success(addAlias(text))
+                addAlias(text)
             } else {
                 result.error("UNAVAILABLE", "别名不能为空.", null)
             }
         } else if (call.method.equals("removeAlias")) {
             val text = call.argument<String>("text")
             if (text != null) {
-                result.success(removeAlias(text))
+                removeAlias(text)
             } else {
                 result.error("UNAVAILABLE", "别名不能为空.", null)
             }
