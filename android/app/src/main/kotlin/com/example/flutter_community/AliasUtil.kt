@@ -5,12 +5,23 @@ import com.alibaba.sdk.android.push.CommonCallback
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.PluginRegistry.Registrar
 
 
 class AliasUtil : MethodChannel.MethodCallHandler {
 
     companion object {
         private const val TAG = "Alias"
+    }
+
+    var CHANNEL = "flutter_community/alias"
+
+    private var channel: MethodChannel? = null
+
+    fun registerWith(registrar: Registrar) {
+        channel = MethodChannel(registrar.messenger(), CHANNEL)
+        channel!!.setMethodCallHandler(AliasUtil())
+
     }
 
     /**
