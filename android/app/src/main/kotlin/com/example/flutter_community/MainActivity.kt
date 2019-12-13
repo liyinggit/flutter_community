@@ -24,6 +24,7 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterView, CHANNEL).setMethodCallHandler { call, result ->
             // Note: this method is invoked on the main thread.
             if (call.method == "addAlias") {
+                //这是传来的参数
                 val text = call.argument<String>("text")
                 if (text != null) {
                     result.success(addAlias(text))

@@ -26,7 +26,7 @@ class _ImagePikerState extends State<ImagePiker> {
   ///添加别名
   Future<void> _addAlias() async {
     try {
-      await alias.invokeMethod('addAlias',"1234567");
+      await alias.invokeMethod('addAlias',{"text":"1234567"});
 
     } catch (e) {
       print(e.toString());
@@ -37,7 +37,7 @@ class _ImagePikerState extends State<ImagePiker> {
   ///移除别名
   Future<void> _removeAlias() async {
     try {
-      await alias.invokeMethod('removeAlias',"1234567");
+      await alias.invokeMethod('removeAlias',{"text":"1234567"});
 
     } catch (e) {
       print(e.toString());
