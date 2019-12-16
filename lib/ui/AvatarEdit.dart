@@ -29,25 +29,24 @@ class _AvatarEditState extends State<AvatarEdit> {
     {'title': '视频', 'value': 'vidio'},
   ];
 
-  // 选择图片
+  /// 选择图片
   Future<Null> _pickImage() async {
     imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (imageFile != null) {}
   }
 
-  //拍照
+  ///拍照
   Future<Null> _takePhoto() async {
     imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
     if (imageFile != null) {}
   }
 
+  ///视频
   Future<Null> _takeVideo() async {
     await ImagePicker.pickVideo(source: ImageSource.camera);
-
   }
 
-
-  //图片裁剪
+  ///图片裁剪
   Future<Null> _cropImage() async {
     File croppedFile = await ImageCropper.cropImage(
         sourcePath: imageFile.path,
@@ -74,7 +73,7 @@ class _AvatarEditState extends State<AvatarEdit> {
     }
   }
 
-  // 弹窗选项点击事件
+  /// 弹窗选项点击事件
   void _handleClick(String key) {
     print(key);
     switch (key) {
@@ -89,9 +88,7 @@ class _AvatarEditState extends State<AvatarEdit> {
         });
         break;
       case 'vidio':
-        _takeVideo().then((_) {
-
-        });
+        _takeVideo().then((_) {});
         break;
       default:
     }
@@ -109,81 +106,77 @@ class _AvatarEditState extends State<AvatarEdit> {
           IconButton(
             alignment: Alignment.centerLeft,
             onPressed: () {
-              showModalBottomSheet(
+              showModalBottomSheet(  //底部模态框
                   context: context,
                   backgroundColor: Colors.transparent,
                   builder: (BuildContext context) {
-                    return ClipRect(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                        ),
-                        child: StatefulBuilder(
-                          builder:
-                              (BuildContext context, StateSetter setState) =>
-                                  Column(
-                            mainAxisSize: MainAxisSize.min, // 设置最小的弹出
-                            children: <Widget>[
-                              Column(
-                                children: _actionListData
-                                    .map((Map<String, dynamic> data) =>
-                                        GestureDetector(
-                                          onTapUp: (TapUpDetails details) {
-                                            setState(() {
-                                              _activeKey = null;
-                                            });
-                                          },
-                                          onTap: () =>
-                                              _handleClick(data['value']),
-                                          onTapDown: (TapDownDetails detail) {
-                                            setState(() {
-                                              _activeKey = data['value'];
-                                            });
-                                          },
-                                          onTapCancel: () {
-                                            setState(() {
-                                              _activeKey = null;
-                                            });
-                                          },
-                                          child: Container(
-                                              width: double.infinity,
-                                              child: Text(
-                                                data['title'],
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                ),
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) =>
+                            Column(
+                          mainAxisSize: MainAxisSize.min, // 设置最小的弹出
+                          children: <Widget>[
+                            Column(
+                              children: _actionListData
+                                  .map((Map<String, dynamic> data) =>
+                                      GestureDetector(
+                                        onTapUp: (TapUpDetails details) {
+                                          setState(() {
+                                            _activeKey = null;
+                                          });
+                                        },
+                                        onTap: () =>
+                                            _handleClick(data['value']),
+                                        onTapDown: (TapDownDetails detail) {
+                                          setState(() {
+                                            _activeKey = data['value'];
+                                          });
+                                        },
+                                        onTapCancel: () {
+                                          setState(() {
+                                            _activeKey = null;
+                                          });
+                                        },
+                                        child: Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 18.0),
+                                            child: Text(
+                                              data['title'],
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 18,
                                               ),
-                                              color: _activeKey == data['value']
-                                                  ? Color(0xfffafafa)
-                                                  : Colors.white),
-                                        ))
-                                    .toList(),
+                                            ),
+                                            color: _activeKey == data['value']
+                                                ? Color(0xfffafafa)
+                                                : Colors.white),
+                                      ))
+                                  .toList(),
+                            ),
+                            ListTile(
+                              title: Text(
+                                '取消',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 18),
                               ),
-                              ListTile(
-                                title: Text(
-                                  '取消',
-                                  textAlign: TextAlign.center,
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                            ],
-                          ),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                          ],
                         ),
                       ),
                     );
                   });
             },
-            icon: SvgPicture.asset(
-              'images/icon_setting.svg',
-              width: 20,
-              height: 20,
-            ),
+            icon: Icon(Icons.settings,size: 20,color: Colors.amber,)
           )
         ],
       ),
