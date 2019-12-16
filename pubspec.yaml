@@ -57,6 +57,7 @@ dependencies:
    #据说能够使用aws
   amazon_cognito_identity_dart: ^0.0.22
 
+  #mobx状态管理的
   mobx: ^0.3.9+3
   flutter_mobx: ^0.3.3+3
 
