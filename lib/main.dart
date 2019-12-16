@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_community/aws/imagePicker.dart';
+import 'package:flutter_community/study/AnimatedList.dart';
+import 'package:flutter_community/study/ImageGridList.dart';
+import 'package:flutter_community/study/imageList.dart';
+import 'package:flutter_community/study/study.dart';
 import 'package:flutter_community/ui/AvatarEdit.dart';
 import 'package:flutter_community/ui/CounterPage.dart';
 import 'package:flutter_community/ui/Drawer.dart';
@@ -29,6 +33,9 @@ class MyApp extends StatelessWidget {
         "ImagePiker": (BuildContext context) => ImagePiker(), //上传图片页面
         "CounterPage":(BuildContext context) => CounterPage(),//mobx状态管理小例子
         "SecondPage":(BuildContext context) => SecondPage(),//mobx状态管理小例子第二个页面
+        ///学习的列表
+        "study":(BuildContext context) => study(),
+        "ImageList":(BuildContext context) => ImageList(),
       },
     );
   }

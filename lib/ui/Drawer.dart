@@ -59,10 +59,21 @@ class _DrawerState extends State<showDrawer> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         ListTile(
-          leading: Icon(Icons.done_outline),
+          leading: Icon(Icons.lock_open,color: Colors.cyan,),
           title: Text("开门"),
           trailing: Icon(Icons.chevron_right),
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        Divider(),
+        ListTile(
+          leading: Icon(Icons.school,color: Colors.amber,),
+          title: Text("学习列表"),
+          trailing: Icon(Icons.chevron_right),
+          onTap: () {
+            Navigator.pushNamed(context, "study");
+          },
         ),
         Divider(),
         ListTile(
