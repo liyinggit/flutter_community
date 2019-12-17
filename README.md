@@ -25,3 +25,6 @@ flutter packages pub run build_runner clean 和
 
 当文件中添加了内容，会自动添加到
 flutter packages pub run build_runner watch
+
+
+要深入学习一下请求和状态管理，咋深入呢，更换主题颜色应该要做做
