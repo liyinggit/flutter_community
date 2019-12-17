@@ -5,10 +5,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_community/Utils/http.dart';
+import 'package:flutter_community/common/Global.dart';
 import 'package:flutter_community/models/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_community/common/Funs.dart' as Fun;
+import 'package:flutter_community/Utils/LocalStorage.dart' as localStorage;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -93,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
     }
     return null;
   }
+
   ///登录
   _login() async {
     const path = '/authenticate';
@@ -105,10 +108,14 @@ class _LoginPageState extends State<LoginPage> {
       Auth auth = new Auth.fromJson(response.data);
       print("token：" + auth.token);
 
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
+        localStorage.setStorage("auth", auth.token).then((response) {
+          print("存储ok了吗？" + response.toString());
+        });
+
         //登录成功后跳转到开门页面
         Navigator.of(context).pushReplacementNamed("Open");
-      }else{
+      } else {
         print("登录失败");
       }
     }).catchError((Object error) {
@@ -213,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           //设置按钮圆角
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           onPressed: () {
             //点击登录按钮，解除焦点，回收键盘
             _focusNodePassWord.unfocus();
@@ -302,7 +309,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           //设置按钮圆角
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           onPressed: () => Navigator.of(context).pushNamed("Register")),
     );
 
