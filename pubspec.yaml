@@ -33,7 +33,7 @@ dependencies:
   #图片缓存
   cached_network_image: ^1.1.3
   #支持多语言
-  intl: 0.15.8
+  intl: 0.16.0
   #实现toast效果
   fluttertoast: ^3.0.3
   #flukit （Flutter UI Kit）是一个Flutter Widget库
