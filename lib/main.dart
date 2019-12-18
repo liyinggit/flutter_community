@@ -14,7 +14,10 @@ import 'package:flutter_community/ui/open.dart';
 
 import 'common/Global.dart';
 
-void main() => Global.init().then((e) =>  runApp(new MyApp()));
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Global.init().then((e) => runApp(new MyApp()));
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -29,13 +32,13 @@ class MyApp extends StatelessWidget {
         "LoginPage": (BuildContext context) => LoginPage(), //登录页面
         "House": (BuildContext context) => House(), //绑定房屋页面
         "Register": (BuildContext context) => Register(), //绑定账号页面
-        "showDrawer":(BuildContext context) => showDrawer(),//drawer
+        "showDrawer": (BuildContext context) => showDrawer(), //drawer
         "ImagePiker": (BuildContext context) => ImagePiker(), //上传图片页面
-        "CounterPage":(BuildContext context) => CounterPage(),//mobx状态管理小例子
-        "SecondPage":(BuildContext context) => SecondPage(),//mobx状态管理小例子第二个页面
+        "CounterPage": (BuildContext context) => CounterPage(), //mobx状态管理小例子
+        "SecondPage": (BuildContext context) => SecondPage(), //mobx状态管理小例子第二个页面
         ///学习的列表
-        "study":(BuildContext context) => study(),
-        "ImageList":(BuildContext context) => ImageList(),
+        "study": (BuildContext context) => study(),
+        "ImageList": (BuildContext context) => ImageList(),
       },
     );
   }
