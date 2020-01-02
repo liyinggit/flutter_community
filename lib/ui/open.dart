@@ -3,12 +3,55 @@ import 'package:flutter/material.dart';
 import 'package:flutter_community/ui/Drawer.dart';
 import 'package:flutter_community/Utils/LocalStorage.dart' as localStorage;
 
+
+class test extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      //使用OrientationBuilder的builder模式感知屏幕旋转
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          //根据屏幕旋转方向返回不同布局行为
+          return orientation == Orientation.portrait
+              ? Container()
+              : Container();
+        },
+      ),
+    );
+  }
+}
+
+
 class Open extends StatefulWidget {
   @override
   _OpenState createState() => _OpenState();
 }
 
-class _OpenState extends State<Open> {
+class _OpenState extends State<Open> with WidgetsBindingObserver {
+  @override
+  @mustCallSuper
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this); //注册监听器
+  }
+
+  @override
+  @mustCallSuper
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this); //移除监听器
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    print("$state");
+    if (state == AppLifecycleState.resumed) {
+      //在前台的情况下
+      print("进入了");
+    }
+  }
+
   String dropdownValue = '小区1';
   String dropdownValue2 = '大门1';
 
@@ -22,6 +65,12 @@ class _OpenState extends State<Open> {
 
   @override
   Widget build(BuildContext context) {
+
+
+    if(MediaQuery.of(context).orientation == Orientation.portrait) {
+      //表示处于竖屏状态
+    }
+
     return new Scaffold(
       appBar: new AppBar(
           title: new Center(
