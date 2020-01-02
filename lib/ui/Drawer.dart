@@ -81,7 +81,7 @@ class _DrawerState extends State<showDrawer> {
           title: Text("切换主题"),
           trailing: Icon(Icons.chevron_right),
           onTap: () {
-            Navigator.of(context).pop();
+            Navigator.pushNamed(context, "ThemeChange");
           },
         ),
       ],
